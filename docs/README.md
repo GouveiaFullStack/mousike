@@ -85,6 +85,36 @@ Esse marco registra a conclusão e organização do **Backend MVP da Mousiké**,
 - limpeza de código legado;
 - atualização da documentação.
 
+### 30 de setembro de 2026 — Frontend MVP e integração full-stack
+
+```text
+changelog/2026-09-30-frontend-mvp/
+```
+
+Arquivos:
+
+- [`Relatório de evolução — PDF`](./changelog/2026-09-30-frontend-mvp/Mousike_Relatorio_Evolucao_2026-09-30.pdf)
+- [`Relatório de evolução — DOCX`](./changelog/2026-09-30-frontend-mvp/Mousike_Relatorio_Evolucao_2026-09-30.docx)
+
+Esse marco registra a evolução da Mousiké para um **frontend funcional integrado ao backend**, incluindo:
+
+- estrutura React + TypeScript + Vite;
+- React Router e rotas protegidas;
+- autenticação e sessão global;
+- layout persistente da aplicação;
+- busca, catálogo e páginas de detalhe;
+- player global;
+- favoritos e playlists;
+- perfis e recursos sociais;
+- histórico conectado à reprodução real;
+- Home personalizada e recomendações;
+- publicação de músicas e criação automática de perfil Artist;
+- suporte a colaboradores;
+- ajustes pontuais de API para o frontend;
+- limpeza de arquivos residuais do template Vite;
+- correção da estrutura da Landing Page;
+- registro de pendências e próximos passos para aplicação do design final vindo do Figma.
+
 ---
 
 ## Estrutura
@@ -99,9 +129,13 @@ docs/
 │   └── Mousike_Documentacao_Tecnica.pdf
 │
 └── changelog/
-    └── 2026-09-22-backend-mvp/
-        ├── Mousike_Relatorio_Evolucao_2026-09-22.docx
-        └── Mousike_Relatorio_Evolucao_2026-09-22.pdf
+    ├── 2026-09-22-backend-mvp/
+    │   ├── Mousike_Relatorio_Evolucao_2026-09-22.docx
+    │   └── Mousike_Relatorio_Evolucao_2026-09-22.pdf
+    │
+    └── 2026-09-30-frontend-mvp/
+        ├── Mousike_Relatorio_Evolucao_2026-09-30.docx
+        └── Mousike_Relatorio_Evolucao_2026-09-30.pdf
 ```
 
 ---
@@ -113,8 +147,9 @@ Novos documentos poderão ser adicionados conforme o projeto atingir novos marco
 ```text
 changelog/
 ├── 2026-09-22-backend-mvp/
-├── frontend-authentication/
-├── frontend-player/
+├── 2026-09-30-frontend-mvp/
+├── frontend-design-system/
+├── artist-content-management/
 └── first-deploy/
 ```
 
