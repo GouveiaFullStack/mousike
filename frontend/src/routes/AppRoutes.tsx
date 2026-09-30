@@ -13,6 +13,7 @@ import PublishPage from "../pages/app/PublishPage";
 import SearchPage from "../pages/app/SearchPage";
 import UserPage from "../pages/app/UserPage";
 import SongPage from "../pages/app/SongPage";
+import HistoryPage from "../pages/app/HistoryPage";
 
 import LoginPage from "../pages/auth/LoginPage";
 import RegisterPage from "../pages/auth/RegisterPage";
@@ -47,6 +48,8 @@ function AppRoutes() {
         <Route index element={<HomePage />} />
 
         <Route path="search" element={<SearchPage />} />
+
+        <Route path="history" element={<HistoryPage />} />
 
         <Route path="library" element={<LibraryPage />} />
 

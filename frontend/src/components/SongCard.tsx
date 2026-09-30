@@ -25,6 +25,7 @@ function SongCard({ song }: SongCardProps) {
     playSong({
       id: song.id,
       title: song.title,
+      duration: song.duration,
       audioUrl: song.audioUrl,
       coverUrl: song.coverUrl ?? song.album?.coverUrl ?? null,
       artistNames,

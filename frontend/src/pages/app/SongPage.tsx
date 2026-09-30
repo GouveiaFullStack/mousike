@@ -48,6 +48,7 @@ function SongPage() {
     playSong({
       id: currentSong.id,
       title: currentSong.title,
+      duration: currentSong.duration,
       audioUrl: currentSong.audioUrl,
       coverUrl: currentSong.coverUrl ?? currentSong.album?.coverUrl ?? null,
       artistNames: artists.map((artist) => artist.name),

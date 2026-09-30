@@ -45,6 +45,7 @@ function TrackItem({
       title,
       audioUrl,
       coverUrl,
+      duration,
       artistNames: artists.map((artist) => artist.name),
     });
   }

@@ -4,36 +4,41 @@ import TrackItem from "../../components/TrackItem";
 
 import { useAuth } from "../../hooks/useAuth";
 
-import { getHome } from "../../services/home.service";
+import { getHistory } from "../../services/history.service";
 
-import type { HomeData } from "../../types/home";
+import type { ListeningHistoryEntry } from "../../types/history";
 
-function HomePage() {
+function HistoryPage() {
   const { user } = useAuth();
 
-  const [home, setHome] = useState<HomeData | null>(null);
+  const [history, setHistory] = useState<ListeningHistoryEntry[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    const userId = user.id;
+
     let cancelled = false;
 
-    async function loadHome() {
+    async function loadHistory() {
       try {
-        const data = await getHome();
+        const data = await getHistory(userId);
 
         if (!cancelled) {
-          setHome(data);
-          setErrorMessage("");
+          setHistory(data);
         }
       } catch (error) {
         if (!cancelled) {
           setErrorMessage(
             error instanceof Error
               ? error.message
-              : "Não foi possível carregar a Home.",
+              : "Não foi possível carregar o histórico.",
           );
         }
       } finally {
@@ -43,50 +48,39 @@ function HomePage() {
       }
     }
 
-    loadHome();
+    loadHistory();
 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [user]);
 
   if (isLoading) {
-    return <p>Carregando sua Home...</p>;
+    return <p>Carregando histórico...</p>;
   }
 
   if (errorMessage) {
     return <p role="alert">{errorMessage}</p>;
   }
 
-  if (!home) {
-    return null;
-  }
-
   return (
     <section>
       <header>
-        <p>Início</p>
+        <h1>Histórico</h1>
 
-        <h1>Olá, {user?.username}</h1>
-
-        <p>Música escolhida para você.</p>
+        <p>Músicas que você ouviu recentemente.</p>
       </header>
 
-      {home.sections.length === 0 ? (
-        <p>Ainda não há conteúdo suficiente para montar sua Home.</p>
+      {history.length === 0 ? (
+        <p>Seu histórico ainda está vazio.</p>
       ) : (
-        home.sections.map((section) => (
-          <section key={section.type}>
-            <header>
-              <h2>{section.title}</h2>
+        <div>
+          {history.map((entry) => {
+            const song = entry.song;
 
-              <p>{section.description}</p>
-            </header>
-
-            <div>
-              {section.songs.map((song) => (
+            return (
+              <article key={entry.id}>
                 <TrackItem
-                  key={song.id}
                   id={song.id}
                   title={song.title}
                   duration={song.duration}
@@ -107,13 +101,19 @@ function HomePage() {
                       : null
                   }
                 />
-              ))}
-            </div>
-          </section>
-        ))
+
+                <p>
+                  Ouvida em {new Date(entry.playedAt).toLocaleString("pt-BR")}
+                </p>
+
+                <p>{entry.secondsListen} segundos ouvidos</p>
+              </article>
+            );
+          })}
+        </div>
       )}
     </section>
   );
 }
 
-export default HomePage;
+export default HistoryPage;

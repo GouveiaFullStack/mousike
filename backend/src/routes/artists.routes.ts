@@ -62,6 +62,53 @@ router.get(
 );
 
 // ------------------------------------------------------
+// GET /artists/me
+//
+// Retorna o perfil Artist do usuário autenticado.
+//
+// Se o usuário ainda não publicou nenhuma música,
+// artist será null.
+// ------------------------------------------------------
+
+router.get(
+  "/artists/me",
+
+  authMiddleware,
+
+  async (request, response) => {
+    try {
+      const userId = request.userId!;
+
+      const artist = await prisma.artist.findUnique({
+        where: {
+          userId,
+        },
+
+        select: {
+          id: true,
+          userId: true,
+          name: true,
+          imageUrl: true,
+          bio: true,
+          verified: true,
+          createdAt: true,
+        },
+      });
+
+      response.json({
+        artist,
+      });
+    } catch (error) {
+      console.error(error);
+
+      response.status(500).json({
+        message: "Erro interno do servidor",
+      });
+    }
+  },
+);
+
+// ------------------------------------------------------
 // GET /artists/:id
 //
 // Busca um artista específico pelo ID.

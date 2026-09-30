@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from "react";
 
 import { PlayerContext } from "./player-context";
+
 import type { PlayerSong } from "../types/player";
 
 type PlayerProviderProps = {
@@ -10,8 +11,12 @@ type PlayerProviderProps = {
 export function PlayerProvider({ children }: PlayerProviderProps) {
   const [currentSong, setCurrentSong] = useState<PlayerSong | null>(null);
 
+  const [playbackId, setPlaybackId] = useState(0);
+
   function playSong(song: PlayerSong) {
     setCurrentSong(song);
+
+    setPlaybackId((current) => current + 1);
   }
 
   function clearSong() {
@@ -22,6 +27,7 @@ export function PlayerProvider({ children }: PlayerProviderProps) {
     <PlayerContext.Provider
       value={{
         currentSong,
+        playbackId,
         playSong,
         clearSong,
       }}

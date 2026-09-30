@@ -12,6 +12,8 @@ function AppSidebar() {
 
         <NavLink to="/app/library">Biblioteca</NavLink>
 
+        <NavLink to="/app/history">Histórico</NavLink>
+
         <NavLink to="/app/profile">Perfil</NavLink>
       </nav>
     </aside>

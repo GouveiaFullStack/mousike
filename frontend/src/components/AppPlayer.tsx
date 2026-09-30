@@ -1,8 +1,17 @@
-import { getMediaUrl } from "../services/api";
+import { useRef, type SyntheticEvent } from "react";
+
+import { useAuth } from "../hooks/useAuth";
 import { usePlayer } from "../hooks/usePlayer";
 
+import { getMediaUrl } from "../services/api";
+import { recordHistory } from "../services/history.service";
+
 function AppPlayer() {
-  const { currentSong, clearSong } = usePlayer();
+  const { user } = useAuth();
+
+  const { currentSong, playbackId, clearSong } = usePlayer();
+
+  const recordedPlaybackId = useRef<number | null>(null);
 
   if (!currentSong) {
     return (
@@ -12,8 +21,43 @@ function AppPlayer() {
     );
   }
 
-  const audioUrl = getMediaUrl(currentSong.audioUrl);
-  const coverUrl = getMediaUrl(currentSong.coverUrl);
+  const song = currentSong;
+
+  const audioUrl = getMediaUrl(song.audioUrl);
+
+  const coverUrl = getMediaUrl(song.coverUrl);
+
+  async function handleTimeUpdate(event: SyntheticEvent<HTMLAudioElement>) {
+    if (!user) {
+      return;
+    }
+
+    if (recordedPlaybackId.current === playbackId) {
+      return;
+    }
+
+    const audio = event.currentTarget;
+
+    const secondsListen = Math.floor(audio.currentTime);
+
+    const minimumSeconds = Math.ceil(song.duration * 0.25);
+
+    if (secondsListen < minimumSeconds) {
+      return;
+    }
+
+    const normalizedSeconds = Math.min(secondsListen, song.duration);
+
+    recordedPlaybackId.current = playbackId;
+
+    try {
+      await recordHistory(user.id, song.id, normalizedSeconds);
+    } catch (error) {
+      recordedPlaybackId.current = null;
+
+      console.error("Erro ao registrar histórico:", error);
+    }
+  }
 
   return (
     <footer>
@@ -21,26 +65,27 @@ function AppPlayer() {
         {coverUrl && (
           <img
             src={coverUrl}
-            alt={`Capa de ${currentSong.title}`}
+            alt={`Capa de ${song.title}`}
             width="64"
             height="64"
           />
         )}
 
         <div>
-          <strong>{currentSong.title}</strong>
+          <strong>{song.title}</strong>
 
-          <p>{currentSong.artistNames.join(", ")}</p>
+          <p>{song.artistNames.join(", ")}</p>
         </div>
       </div>
 
       {audioUrl && (
         <audio
-          key={currentSong.id}
+          key={`${song.id}-${playbackId}`}
           src={audioUrl}
           controls
           autoPlay
           preload="metadata"
+          onTimeUpdate={handleTimeUpdate}
         />
       )}
 
