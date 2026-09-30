@@ -1,7 +1,10 @@
 import { useParams } from "react-router";
 
+import FollowArtistButton from "../../components/FollowArtistButton";
 import TrackItem from "../../components/TrackItem";
+
 import { useResourceById } from "../../hooks/useResourceById";
+
 import { getMediaUrl } from "../../services/api";
 import { getArtist } from "../../services/catalog.service";
 
@@ -33,35 +36,47 @@ function ArtistPage() {
     return null;
   }
 
-  const imageUrl = getMediaUrl(artist.imageUrl);
+  const currentArtist = artist;
+
+  const imageUrl = getMediaUrl(currentArtist.imageUrl);
 
   return (
     <section>
       <header>
         {imageUrl && (
-          <img src={imageUrl} alt={artist.name} width="240" height="240" />
+          <img
+            src={imageUrl}
+            alt={currentArtist.name}
+            width="240"
+            height="240"
+          />
         )}
 
         <div>
           <p>Artista</p>
 
           <h1>
-            {artist.name}
-            {artist.verified ? " ✓" : ""}
+            {currentArtist.name}
+            {currentArtist.verified ? " ✓" : ""}
           </h1>
 
-          {artist.bio && <p>{artist.bio}</p>}
+          {currentArtist.bio && <p>{currentArtist.bio}</p>}
+
+          <FollowArtistButton
+            artistId={currentArtist.id}
+            ownerUserId={currentArtist.userId}
+          />
         </div>
       </header>
 
       <section>
         <h2>Músicas</h2>
 
-        {artist.songs.length === 0 ? (
+        {currentArtist.songs.length === 0 ? (
           <p>Nenhuma música encontrada.</p>
         ) : (
           <div>
-            {artist.songs.map((relation) => (
+            {currentArtist.songs.map((relation) => (
               <TrackItem
                 key={relation.songId}
                 id={relation.song.id}
@@ -75,14 +90,15 @@ function ArtistPage() {
                 }
                 artists={[
                   {
-                    id: artist.id,
-                    name: artist.name,
+                    id: currentArtist.id,
+                    name: currentArtist.name,
                   },
                 ]}
                 album={
                   relation.song.album
                     ? {
                         id: relation.song.album.id,
+
                         title: relation.song.album.title,
                       }
                     : null

@@ -3,6 +3,8 @@ import { Link } from "react-router";
 import { usePlayer } from "../hooks/usePlayer";
 import { getMediaUrl } from "../services/api";
 import { formatDuration } from "../utils/formatDuration";
+import AddToPlaylist from "./AddToPlaylist";
+import FavoriteButton from "./FavoriteButton";
 
 type TrackArtist = {
   id: number;
@@ -72,6 +74,10 @@ function TrackItem({
       </div>
 
       <span>{formatDuration(duration)}</span>
+
+      <FavoriteButton songId={id} />
+
+      <AddToPlaylist songId={id} />
 
       <button type="button" onClick={handlePlay}>
         Tocar

@@ -1,7 +1,10 @@
 import { Link } from "react-router";
 
-import { getMediaUrl } from "../services/api";
+import AddToPlaylist from "./AddToPlaylist";
+import FavoriteButton from "./FavoriteButton";
+
 import { usePlayer } from "../hooks/usePlayer";
+import { getMediaUrl } from "../services/api";
 import type { SearchSong } from "../types/search";
 import { formatDuration } from "../utils/formatDuration";
 
@@ -14,7 +17,9 @@ function SongCard({ song }: SongCardProps) {
 
   const coverUrl = getMediaUrl(song.coverUrl ?? song.album?.coverUrl ?? null);
 
-  const artistNames = song.artists.map((songArtist) => songArtist.artist.name);
+  const artists = song.artists.map((songArtist) => songArtist.artist);
+
+  const artistNames = artists.map((artist) => artist.name);
 
   function handlePlay() {
     playSong({
@@ -39,33 +44,39 @@ function SongCard({ song }: SongCardProps) {
         </Link>
       )}
 
-      <Link to={`/app/songs/${song.id}`}>
-        <h3>{song.title}</h3>
-      </Link>
+      <div>
+        <Link to={`/app/songs/${song.id}`}>
+          <h3>{song.title}</h3>
+        </Link>
 
-      <p>
-        {song.artists.map((songArtist, index) => (
-          <span key={songArtist.artistId}>
-            {index > 0 && ", "}
-
-            <Link to={`/app/artists/${songArtist.artist.id}`}>
-              {songArtist.artist.name}
-            </Link>
-          </span>
-        ))}
-      </p>
-
-      {song.album && (
         <p>
-          <Link to={`/app/albums/${song.album.id}`}>{song.album.title}</Link>
+          {artists.map((artist, index) => (
+            <span key={artist.id}>
+              {index > 0 && ", "}
+
+              <Link to={`/app/artists/${artist.id}`}>{artist.name}</Link>
+            </span>
+          ))}
         </p>
-      )}
 
-      <p>{formatDuration(song.duration)}</p>
+        {song.album && (
+          <p>
+            <Link to={`/app/albums/${song.album.id}`}>{song.album.title}</Link>
+          </p>
+        )}
 
-      <button type="button" onClick={handlePlay}>
-        Tocar
-      </button>
+        <p>{formatDuration(song.duration)}</p>
+      </div>
+
+      <div>
+        <FavoriteButton songId={song.id} />
+
+        <AddToPlaylist songId={song.id} />
+
+        <button type="button" onClick={handlePlay}>
+          Tocar
+        </button>
+      </div>
     </article>
   );
 }

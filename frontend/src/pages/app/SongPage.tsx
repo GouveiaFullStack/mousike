@@ -5,6 +5,8 @@ import { useResourceById } from "../../hooks/useResourceById";
 import { getMediaUrl } from "../../services/api";
 import { getSong } from "../../services/catalog.service";
 import { formatDuration } from "../../utils/formatDuration";
+import AddToPlaylist from "../../components/AddToPlaylist";
+import FavoriteButton from "../../components/FavoriteButton";
 
 function SongPage() {
   const { songId: songIdParam } = useParams();
@@ -80,6 +82,10 @@ function SongPage() {
           </p>
 
           <p>{formatDuration(song.duration)}</p>
+
+          <FavoriteButton songId={song.id} />
+
+          <AddToPlaylist songId={song.id} />
 
           <button type="button" onClick={handlePlay}>
             Tocar

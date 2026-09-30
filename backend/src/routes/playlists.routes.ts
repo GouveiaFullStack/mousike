@@ -92,6 +92,100 @@ router.get("/playlists", async (request, response) => {
   }
 });
 
+router.get(
+  "/users/:id/playlists",
+  authMiddleware,
+  async (request, response) => {
+    try {
+      const userId = Number(request.params.id);
+
+      if (!Number.isInteger(userId) || userId <= 0) {
+        response.status(400).json({
+          message: "ID de usuário inválido",
+        });
+
+        return;
+      }
+
+      if (request.userId !== userId) {
+        response.status(403).json({
+          message: "Você não tem permissão para acessar estas playlists",
+        });
+
+        return;
+      }
+
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+
+      if (!user) {
+        response.status(404).json({
+          message: "Usuário não encontrado",
+        });
+
+        return;
+      }
+
+      const playlists = await prisma.playlist.findMany({
+        where: {
+          userId,
+        },
+
+        orderBy: {
+          createdAt: "desc",
+        },
+
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              profileImageUrl: true,
+            },
+          },
+
+          songs: {
+            orderBy: {
+              position: "asc",
+            },
+
+            include: {
+              song: {
+                include: {
+                  artists: {
+                    include: {
+                      artist: true,
+                    },
+                  },
+
+                  album: true,
+
+                  genres: {
+                    include: {
+                      genre: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      response.json(playlists);
+    } catch (error) {
+      console.error(error);
+
+      response.status(500).json({
+        message: "Erro interno do servidor",
+      });
+    }
+  },
+);
+
 // ------------------------------------------------------
 // GET /playlists/:id
 // Busca uma playlist específica.

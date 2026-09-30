@@ -1,7 +1,9 @@
 import { useEffect, useState, type ReactNode } from "react";
 
 import { AuthContext } from "./auth-context";
+
 import { getAuthenticatedUser } from "../services/auth.service";
+
 import type { AuthUser, LoginResponse } from "../types/auth";
 
 type AuthProviderProps = {
@@ -57,7 +59,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   function setSession(session: LoginResponse) {
     sessionStorage.setItem(tokenKey, session.token);
+
     setUser(session.user);
+  }
+
+  function updateUser(updatedUser: AuthUser) {
+    setUser(updatedUser);
   }
 
   function logout() {
@@ -71,6 +78,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         user,
         isLoading,
         setSession,
+        updateUser,
         logout,
       }}
     >
